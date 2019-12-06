@@ -16,10 +16,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="标题">
+          <el-form-item label="视频标题">
             <el-input v-model="model.title"></el-input>
           </el-form-item>
-          <el-form-item label="图文图片">
+          <el-form-item label="视频图片">
             <el-upload class="pic-uploader"
                        :action="uploadUrl"
                        :show-file-list="false"
@@ -32,7 +32,7 @@
                  class="el-icon-plus pic-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label="详情">
+          <el-form-item label="视频详情">
             <vue-editor useCustomImageHandler
                         @image-added="handleImageAdded"
                         v-model="model.body">
@@ -79,19 +79,19 @@ export default {
       let res
       if (this.id) {
         // 如果有id,则编辑
-        res = await this.$http.put(`rest/picarticles/${this.id}`, this.model)
+        res = await this.$http.put(`rest/picvideos/${this.id}`, this.model)
       } else {
-        res = await this.$http.post('rest/picarticles', this.model)
+        res = await this.$http.post('rest/picvideos', this.model)
       }
 
-      this.$router.push('/picarticles/list')
+      this.$router.push('/picvideos/list')
       this.$message({
         type: 'success',
         message: '保存成功!'
       })
     },
     async fetch () {
-      const res = await this.$http.get(`rest/picarticles/${this.id}`)
+      const res = await this.$http.get(`rest/picvideos/${this.id}`)
       this.model = res.data
     },
     async fetchCategories () {

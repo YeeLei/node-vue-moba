@@ -13,6 +13,8 @@ import ArticleEdit from '../views/ArticleEdit.vue'
 import ArticleList from '../views/ArticleList.vue'
 import picArticleEdit from '../views/picArticleEdit.vue'
 import picArticleList from '../views/picArticleList.vue'
+import picVideoEdit from '../views/picVideoEdit.vue'
+import picVideoList from '../views/picVideoList.vue'
 import AdEdit from '../views/AdEdit.vue'
 import AdList from '../views/AdList.vue'
 import AdminUser from '../views/AdminUser.vue'
@@ -148,6 +150,29 @@ const routes = [
         component: picArticleList,
         meta: {
           title: '图文列表'
+        }
+      },
+      {
+        path: '/picvideos/create',
+        component: picVideoEdit,
+        props: true,
+        meta: {
+          title: '新建视频'
+        }
+      },
+      {
+        path: '/picvideos/edit/:id',
+        component: picVideoEdit,
+        props: true,
+        meta: {
+          title: '编辑视频'
+        }
+      },
+      {
+        path: '/picvideos/list',
+        component: picVideoList,
+        meta: {
+          title: '视频列表'
         }
       },
       {

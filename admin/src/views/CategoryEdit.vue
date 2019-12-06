@@ -25,9 +25,9 @@
                 </el-form-item>
                 <el-form-item class="btn">
                   <el-button type="primary"
-                             native-type="submit">
-                    保存
-                  </el-button>
+                             round
+                             native-type="submit"
+                             style="float:right;width:100px;">保存</el-button>
                 </el-form-item>
               </el-form>
             </div>

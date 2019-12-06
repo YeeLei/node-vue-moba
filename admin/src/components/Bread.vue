@@ -1,7 +1,8 @@
 <template>
   <div class="bread_container">
     <span class="bars">
-      <i class="fa fa-bars"></i>
+      <i class="fa fa-bars"
+         @click="isCollapse"></i>
     </span>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item v-for="item in levelList"
@@ -14,10 +15,12 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      levelList: []
+      levelList: [],
+      collapse: false
     }
   },
   watch: {
@@ -37,7 +40,14 @@ export default {
         matched = [{ path: '/goods/create', meta: { title: '新建物品' } }].concat(matched)
       }
       this.levelList = matched
-    }
+    },
+    isCollapse () {
+      this.collapse = !this.collapse
+      this.setCollapse(this.collapse)
+    },
+    ...mapMutations({
+      setCollapse: 'SET_COLLAPSE'
+    })
   }
 }
 </script>

@@ -1,45 +1,47 @@
 <template>
   <div>
     <!-- 轮播图 -->
-    <swiper :options="swiperOption" v-if="banners.length">
-      <swiper-slide v-for="(banner, index) in banners" :key="index">
+    <swiper :options="swiperOption"
+            v-if="banners.length">
+      <swiper-slide v-for="(banner, index) in banners"
+                    :key="index">
         <a :href="banner.url">
-          <img class="w-100" :src="banner.image" />
+          <img class="w-100"
+               :src="banner.image" />
         </a>
       </swiper-slide>
-      <div
-        class="swiper-pagination pagination-home text-right px-3 pb-1"
-        slot="pagination"
-      ></div>
+      <div class="swiper-pagination pagination-home text-right px-3 pb-1"
+           slot="pagination"></div>
     </swiper>
     <!-- 图标导航 -->
     <div class="nav-icons bg-white mt-3">
       <div class="d-flex flex-wrap text-center">
-        <a
-          class="nav-item mb-3 mt-3 text-dark"
-          v-for="n in sprite"
-          :key="n.name"
-          :href="n.link"
-        >
-          <i class="sprite" :class="n.icon"></i>
+        <a class="nav-item mb-3 mt-3 text-dark"
+           v-for="n in sprite"
+           :key="n.name"
+           :href="n.link">
+          <i class="sprite"
+             :class="n.icon"></i>
           <div class="py-2">{{ n.name }}</div>
         </a>
       </div>
-      <div class="bg-light py-2 fs-sm text-center" @click="handleSprite">
-        <i class="sprite mr-1" :class="getIcon"></i>
+      <div class="bg-light py-2 fs-sm text-center"
+           @click="handleSprite">
+        <i class="sprite mr-1"
+           :class="getIcon"></i>
         <span>收起</span>
       </div>
     </div>
     <!-- 新闻资讯 -->
-    <m-list-card icon="menu" title="新闻资讯" :categories="newsCats">
+    <m-list-card icon="menu"
+                 title="新闻资讯"
+                 :categories="newsCats">
       <template #items="{category}">
-        <router-link
-          :to="`/articles/${news._id}`"
-          v-for="(news, index) in category.newsList.slice(0, 5)"
-          :key="index"
-          tag="a"
-          class="py-2 fs-xl d-flex"
-        >
+        <router-link :to="`/articles/${news._id}`"
+                     v-for="(news, index) in category.newsList.slice(0, 5)"
+                     :key="index"
+                     tag="a"
+                     class="py-2 fs-xl d-flex">
           <span class="text-info1">[{{ news.categoryName }}]</span>
           <span class="px-1">|</span>
           <span class="flex-1 text-ellipsis">{{ news.title }}</span>
@@ -48,38 +50,66 @@
       </template>
     </m-list-card>
     <!-- 英雄列表 -->
-    <m-list-card icon="card-hero" title="英雄列表" :categories="heroCats">
+    <m-list-card icon="card-hero"
+                 title="英雄列表"
+                 :categories="heroCats"
+                 :newHeroBanner="newHeroBanner[0]">
       <template #items="{category}">
-        <div
-          class="d-flex flex-wrap"
-          style="margin: 0 -0.5rem;flex-wrap: wrap;"
-        >
-          <router-link
-            tag="div"
-            :to="`/heroes/${hero._id}`"
-            class="p-2 text-center"
-            style="width: 20%;"
-            v-for="(hero, index) in category.heroList"
-            :key="index"
-          >
-            <img :src="hero.avatar" class="w-100" />
+        <div class="d-flex flex-wrap"
+             style="margin: 0 -0.5rem;flex-wrap: wrap;">
+          <router-link tag="div"
+                       :to="`/heroes/${hero._id}`"
+                       class="p-2 text-center"
+                       style="width: 20%;"
+                       v-for="(hero, index) in category.heroList"
+                       :key="index">
+            <img :src="hero.avatar"
+                 class="w-100" />
             <div>{{ hero.name }}</div>
           </router-link>
         </div>
       </template>
     </m-list-card>
-    <!-- 图文攻略 -->
-    <m-list-card icon="tuwen" title="图文攻略" :categories="picNewsCats">
+    <!-- 精彩视频 -->
+    <m-list-card icon="video"
+                 title="精彩视频"
+                 :categories="videoNewsCats">
       <template #items="{category}">
         <ul class="w-100 strategy_list">
-          <router-link
-            :to="`/picarticles/${picnews._id}`"
-            v-for="(picnews, index) in category.picNewsList.slice(0, 8)"
-            :key="index"
-            tag="li"
-            class="pic-news mb-4"
-          >
-            <a class="pic"><img v-lazy="picnews.pic" />></a>
+          <router-link :to="`/picvideos/${videonews._id}`"
+                       v-for="(videonews, index) in category.videoNewsList.slice(0, 4)"
+                       :key="index"
+                       tag="li"
+                       class="pic-news mb-4">
+            <div class="pic"><img v-lazy="videonews.pic" /></div>
+            <div class="pic-desc py-1">
+              <div class="title fs-xl mt-1">
+                {{ videonews.title }}
+              </div>
+              <span class="desc mt-2 fs-sm text-grey-2">
+                {{ videonews.title }}
+              </span>
+              <span class="time mt-2 fs-xs text-grey-3">
+                {{ videonews.createdAt | date }}
+              </span>
+            </div>
+            <div class="line"></div>
+          </router-link>
+        </ul>
+      </template>
+    </m-list-card>
+    <!-- 图文攻略 -->
+    <m-list-card icon="tuwen"
+                 title="图文攻略"
+                 :categories="picNewsCats">
+      <template #items="{category}">
+        <ul class="w-100 strategy_list">
+          <router-link :to="`/picarticles/${picnews._id}`"
+                       v-for="(picnews, index) in category.picNewsList.slice(0, 8)"
+                       :key="index"
+                       tag="li"
+                       class="pic-news mb-4">
+            <div class="pic"><img v-lazy="picnews.pic" /></div>
             <div class="pic-desc py-1">
               <div class="title fs-xl mt-1">
                 {{ picnews.title }}
@@ -96,16 +126,13 @@
         </ul>
       </template>
     </m-list-card>
-    <!-- <m-card icon="menu1"
-            title="精彩视频">
-    </m-card> -->
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 export default {
-  data() {
+  data () {
     return {
       sprite: [
         {
@@ -183,26 +210,32 @@ export default {
         loop: true
       },
       banners: [],
+      newHeroBanner: {},
       newsCats: [],
       heroCats: [],
-      picNewsCats: []
+      picNewsCats: [],
+      videoNewsCats: []
     }
   },
-  created() {
+  created () {
     // 获取首页轮播图数据
     this.fetchBanners()
+    // 获取首页最新英雄数据
+    this.fetchNewHeroBanner()
     // 获取首页新闻资讯数据
     this.fetchNewsCats()
     // 获取首页英雄列表数据
     this.fetchHeroCats()
     // 获取首页图文攻略数据
     this.fetchPicNewsCats()
+    // 获取首页精彩视频数据
+    this.fetchPicVideoCats()
   },
-  mounted() {
+  mounted () {
     this.sprite1 = this.sprite.slice()
   },
   computed: {
-    getIcon() {
+    getIcon () {
       if (this.sprite.length === 4) {
         return 'sprite-arrow-up'
       } else {
@@ -211,37 +244,48 @@ export default {
     }
   },
   methods: {
-    handleSprite() {
+    handleSprite () {
       if (this.sprite.length === 4) {
         this.sprite = this.sprite1
       } else {
         this.sprite = this.sprite.slice(0, 4)
       }
     },
-    async fetchBanners() {
+    async fetchBanners () {
       // 请求首页轮播图数据
       const res = await this.$http.get('/banners/list')
       this.banners = res.data[0].items
     },
-    async fetchNewsCats() {
+    async fetchNewHeroBanner () {
+      // 请求首页最新英雄数据
+      const res = await this.$http.get('/newHero')
+      this.newHeroBanner = res.data[0].items
+    },
+    async fetchNewsCats () {
       // 请求新闻资讯数据
       const res = await this.$http.get('news/list')
       this.newsCats = res.data
     },
-    async fetchHeroCats() {
+    async fetchHeroCats () {
       // 请求英雄列表数据
       const res = await this.$http.get('heroes/list')
       this.heroCats = res.data
     },
-    async fetchPicNewsCats() {
+    async fetchPicNewsCats () {
       // 请求图文攻略数据
       const res = await this.$http.get('picarticles/list')
       this.picNewsCats = res.data
+    },
+    async fetchPicVideoCats () {
+      // 请求视频攻略数据
+      const res = await this.$http.get('picvideos/list')
+      this.videoNewsCats = res.data
     }
+
   },
   filters: {
     // 格式化时间
-    date(val) {
+    date (val) {
       return dayjs(val).format('MM/DD')
     }
   }

@@ -1,23 +1,23 @@
 <template>
   <div class="page-article"
        v-if="model">
-    <div class="d-flex py-3 px-2 border-bottom">
+    <!-- <div class="d-flex py-3 px-2 border-bottom">
       <div class="iconfont icon-back text-blue"
            @click="back"></div>
       <strong class="flex-1 text-blue pl-2 text-ellipsis">{{model.title}}</strong>
       <div class="text-grey">2019-11-12</div>
-    </div>
+    </div> -->
     <div v-html="model.body"
-         class="px-3 fs-xl body">
+         class="fs-xl box">
     </div>
     <div class="px-3 py-3 mt-3">
       <div class="d-flex ai-center about">
-        <h2 class="text-blue fs-xl text-ellipsis ml-1">相关资讯</h2>
+        <h2 class="text-blue fs-xl text-ellipsis ml-1">猜您喜欢</h2>
       </div>
       <div class="pt-2 about-news">
         <router-link class="py-1 d-flex ai-center"
                      tag="div"
-                     :to="`/picarticles/${item._id}`"
+                     :to="`/picvideos/${item._id}`"
                      v-for="item in model.related"
                      :key="item._id">
           <span class="flex-1 text-ellipsis fs-lg">{{item.title}}</span>
@@ -49,7 +49,7 @@ export default {
       this.$router.back()
     },
     async fetch () {
-      const res = await this.$http.get(`picarticles/${this.id}`)
+      const res = await this.$http.get(`picvideos/${this.id}`)
       this.model = res.data
     }
   },
@@ -72,15 +72,14 @@ export default {
   .iconfont {
     font-size: 1.6923rem;
   }
-  .body {
-    padding-top: 1rem;
+  .box {
     img {
       max-width: 100%;
       height: auto;
     }
     iframe {
       width: 100%;
-      height: auto;
+      height: 230px;
     }
   }
   .about {

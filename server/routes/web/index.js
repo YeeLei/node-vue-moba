@@ -7,7 +7,7 @@ module.exports = app => {
   const Article = mongoose.model('Article')
   const Hero = mongoose.model('Hero')
   const PicArticle = mongoose.model('Picarticle')
-
+  const PicVideo = mongoose.model('Picvideo')
   // 首页轮播图数据
   router.get('/banners/list', async(req,res) => {
     const banners = await Ad.find({
@@ -15,6 +15,15 @@ module.exports = app => {
     })
     res.send(banners)
   })
+
+    // 首页最新英雄
+    router.get('/newHero', async(req,res) => {
+      const newHeroBanner = await Ad.find({
+        name: '最新英雄'
+      })
+      res.send(newHeroBanner)
+    })
+
   // 导入新闻数据
   router.get('/news/init', async (req, res) => {
     const parent = await Category.findOne({
@@ -193,5 +202,48 @@ module.exports = app => {
     res.send(data)
   })
 
+   // 图文数据
+   router.get('/picvideos/list', async (req, res) => {
+    const parent = await Category.findOne({
+      name: '视频分类'
+    })
+    const cats = await Category.aggregate([
+      { $match: { parent: parent._id } },
+      {
+        $lookup: {
+          from: 'picvideos',
+          localField: '_id',
+          foreignField: 'categories',
+          as: 'videoNewsList'
+        }
+      }
+    ])
+    cats.map(cat => {
+      cat.videoNewsList.map(news => {
+        news.categoryName = cat.name
+        return news
+      })
+      cat.videoNewsList.sort((a,b)=> {
+        if (a.createdAt > b.createdAt) {
+          return -1;
+        }else if (a.createdAt == b.createdAt) {
+          return 0;
+        } else {
+          return 1;
+        }
+      })
+      return cat
+    })
+    res.send(cats)
+  })
+
+  // 视频详情
+  router.get('/picvideos/:id', async (req, res) => {
+    const data = await PicVideo.findById(req.params.id).lean()
+    data.related = await PicVideo.find().where({
+      categories: { $in: data.categories }
+    }).limit(2)
+    res.send(data)
+  })
   app.use('/web/api', router)
 }

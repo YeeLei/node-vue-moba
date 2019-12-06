@@ -91,8 +91,8 @@
                 </span>
               </div>
               <p class="text-dark-1">{{currentSkill.description}}</p>
-              <div class="border-bottom"></div>
-              <p class="text-grey-1">小提示: {{currentSkill.tips}}</p>
+              <div class="border-bottom mt-3"></div>
+              <p class="text-grey-1 py-2">小提示: {{currentSkill.tips}}</p>
             </div>
           </div>
         </div>
@@ -180,7 +180,10 @@
           </div>
         </m-card>
       </swiper-slide>
-      <swiper-slide></swiper-slide>
+      <swiper-slide>
+        <div class="no-result"
+             style="width:100%;height:50vh;">暂无攻略！</div>
+      </swiper-slide>
     </swiper>
   </div>
 </template>

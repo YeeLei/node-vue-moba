@@ -1,5 +1,5 @@
 <template>
-  <div class="heroeslist">
+  <div class="pic-articles-list">
     <bread></bread>
     <div class="fillcontain">
       <div class="search_container search-area">
@@ -7,10 +7,22 @@
                  ref="search_data"
                  :model="search_data"
                  class="demo-form-inline search-form">
-          <el-form-item>
-            <el-input size="mini"
-                      placeholder="搜索英雄"
-                      v-model="search_data.name"></el-input>
+          <!-- <el-form-item label="文章搜索:">
+            <el-input placeholder="搜索文章"
+                      v-model="search_data.name">
+            </el-input>
+          </el-form-item> -->
+          <el-form-item label="视频分类搜索:"
+                        style="margin-left: 20px">
+            <el-select filterable
+                       multiple
+                       v-model="search_data.categories">
+              <el-option v-for="item in categories"
+                         :key="item._id"
+                         :label="item.name"
+                         :value="item._id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button type="primary"
@@ -18,11 +30,12 @@
                        icon="el-icon-search"
                        @click='onScreeoutMoney()'>筛选</el-button>
           </el-form-item>
+
           <el-form-item class="btnRight">
             <el-button type="primary"
                        size="mini"
                        icon="el-icon-circle-plus-outline"
-                       @click="$router.push(`/heroes/create`)">添加</el-button>
+                       @click="$router.push(`/picVideos/create`)">添加视频</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -35,53 +48,29 @@
                            width="240"
                            align='center'>
           </el-table-column>
-          <el-table-column prop="name"
-                           label="名称"
-                           align='center'>
-          </el-table-column>
           <el-table-column prop="title"
-                           label="称号"
+                           label="视频标题"
                            align='center'>
-          </el-table-column>
-          <el-table-column prop="avatar"
-                           label="头像"
-                           align='center'>
-            <template slot-scope="scope">
-              <img :src="scope.row.avatar"
-                   style="height:3rem;border-radius:3px;">
-            </template>
           </el-table-column>
           <el-table-column prop="categories"
-                           label="分类"
+                           label="视频分类"
                            align='center'
-                           :formatter="stateFormat">
+                           :formatter="categoryFormat">
           </el-table-column>
-          <el-table-column prop="scores.difficult"
-                           label="难度评分"
-                           align='center'>
-          </el-table-column>
-          <el-table-column prop="scores.skills"
-                           label="技能评分"
-                           align='center'>
-          </el-table-column>
-          <el-table-column prop="scores.attack"
-                           label="攻击评分"
-                           align='center'>
-          </el-table-column>
-          <el-table-column prop="scores.survive"
-                           label="生存评分"
-                           align='center'>
+          <el-table-column prop="createdAt"
+                           label="创建时间"
+                           align='center'
+                           :formatter="timeFormat">
           </el-table-column>
           <el-table-column fixed="right"
                            label="操作"
                            width="180"
                            align='center'>
             <template slot-scope="scope">
-              <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
               <el-button type="primary"
                          size="small"
                          icon="el-icon-edit"
-                         @click="$router.push(`/heroes/edit/${scope.row._id}`)">编辑</el-button>
+                         @click="$router.push(`/picvideos/edit/${scope.row._id}`)">编辑</el-button>
               <el-button type="danger"
                          size="small"
                          icon="el-icon-delete"
@@ -109,6 +98,7 @@
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 export default {
   data () {
     return {
@@ -121,41 +111,53 @@ export default {
         page_sizes: [5, 10, 15, 20],  //每页显示多少条
         layout: "total, sizes, prev, pager, next, jumper"   // 翻页属性
       },
-      filterTableData: [],
       tableData: [],
+      filterTableData: [],
       search_data: {
-        name: ''
-      }
+        categories: []
+      },
+      categories: []
     }
   },
   methods: {
-    stateFormat (row) {
+    categoryFormat (row) {
       let ret = []
       row.categories.forEach(s => {
         return ret.push(s.name)
       })
       return ret.join('、')
     },
+    timeFormat (row) {
+      return dayjs(row.createdAt).format('YYYY/MM/DD hh:mm')
+    },
     async fetch () {
-      const res = await this.$http.get('rest/heroes')
+      const res = await this.$http.get('rest/picvideos')
       this.items = res.data
       this.filterTableData = res.data
       // 设置分页数据
       this.setPaginations();
     },
+    async fetchCategory () {
+      const res = await this.$http.get(`rest/categories`)
+      this.categories = res.data
+    },
     async remove (row) {
-      this.$confirm(`是否确定要删除英雄 "${row.name}"?`, '提示', {
+      this.$confirm(`是否确定要删除视频 "${row.title}"?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        await this.$http.delete(`rest/heroes/${row._id}`)
+        await this.$http.delete(`rest/picvideos/${row._id}`)
         this.$message({
           type: 'success',
           message: '删除成功!'
         });
-        // 删除成功,重新获取分类数据
+        // 删除成功
         this.fetch()
+        setTimeout(() => {
+          this.onBeforeQuery()
+        }, 100)
+        // this.fetch()
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -176,9 +178,6 @@ export default {
     handleCurrentChange (page) {
       // 当前页
       let sortnum = this.paginations.page_size * (page - 1);
-      // eslint-disable-next-line no-console
-      console.log(sortnum);
-
       let table = this.items.filter((item, index) => {
         return index >= sortnum;
       });
@@ -197,15 +196,15 @@ export default {
     },
     onScreeoutMoney () {
       // 筛选
-      if (!this.search_data.name) {
+      if (this.search_data.categories.length === 0) {
         this.$message({
           type: "warning",
-          message: "请输入要搜索的英雄"
+          message: "请输入视频分类名称!"
         });
         this.fetch();
         return;
       }
-      this.items = this.fuzzyQuery(this.filterTableData, this.search_data.name)
+      this.items = this.fuzzyQuery(this.filterTableData, this.search_data.categories)
       if (this.items) {
         this.$message({
           type: "success",
@@ -216,26 +215,55 @@ export default {
         return
       }
     },
-    fuzzyQuery (list, keyWord) {
+    onBeforeQuery () {
+      // 筛选
+      if (this.search_data.categories.length === 0) {
+        this.fetch();
+        return;
+      }
+      this.items = this.fuzzyQuery(this.filterTableData, this.search_data.categories)
+      // 重新查询分页数据
+      this.setPaginations();
+      return
+    },
+    fuzzyQuery (list, categoryId) {
       // 模糊查找
-      var arr = [];
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].name.split(keyWord).length > 1) {
-          arr.push(list[i]);
+      let arr = [];
+      for (let i = 0; i < list.length; i++) {
+        //是否被包含
+        let ret = []
+        list[i].categories.forEach(item => {
+          ret.push(item._id)
+        })
+        let flag = this.isContained(new Array(ret)[0], new Array(categoryId)[0])
+        if (flag) {
+          arr.push(list[i])
         }
       }
       return arr;
+    },
+    isContained (a, b) {
+      // 判断a是b是数组且a的子集包含b的子集
+      if (!(a instanceof Array) || !(b instanceof Array)) return false;
+      if (a.length < b.length) return false;
+      var aStr = a.toString();
+      for (var i = 0, len = b.length; i < len; i++) {
+        if (aStr.indexOf(b[i]) == -1) return false;
+      }
+      return true;
     }
   },
   created () {
-    // 获取英雄列表数据
+    // 获取分类列表数据
     this.fetch()
-  },
+    // 获取分类
+    this.fetchCategory()
+  }
 }
 </script>
 
 <style lang="scss">
-.heroeslist {
+.pic-articles-list {
   width: 100%;
   height: 100%;
   font-size: 16px;

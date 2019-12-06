@@ -5,6 +5,7 @@ import Home from '../views/Home.vue'
 import Article from '../views/Article.vue'
 import Hero from '../views/Hero.vue'
 import PicArticle from '../views/Picarticle.vue'
+import PicVideo from '../views/Picvideo.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -27,6 +28,12 @@ const routes = [
         path: '/picarticles/:id',
         name: 'picarticles',
         component: PicArticle,
+        props: true
+      },
+      {
+        path: '/picvideos/:id',
+        name: 'picvideos',
+        component: PicVideo,
         props: true
       }
     ]

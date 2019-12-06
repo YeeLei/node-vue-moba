@@ -10,7 +10,7 @@
     <div v-html="model.body"
          class="px-3 body fs-xl">
     </div>
-    <div class="px-3 border-top py-3">
+    <div class="px-3 py-3">
       <div class="d-flex ai-center about">
         <h2 class="text-blue fs-xl text-ellipsis ml-1">相关资讯</h2>
       </div>

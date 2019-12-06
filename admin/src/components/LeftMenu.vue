@@ -4,6 +4,7 @@
       <el-menu router
                :unique-opened="true"
                :default-active="$route.path"
+               :collapse="collapse"
                mode="vertical"
                background-color="#324057"
                text-color="#fff"
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'left-menu',
   data () {
@@ -63,21 +65,6 @@ export default {
           name: '内容管理',
           icon: 'fa fa-bars',
           subname: [
-            {
-              name: '物品',
-              child: [
-                {
-                  id: '2-1',
-                  path: '/goods/create',
-                  name: '新建物品'
-                },
-                {
-                  id: '2-2',
-                  path: '/goods/list',
-                  name: '物品列表'
-                }
-              ]
-            },
             {
               name: '英雄',
               child: [
@@ -109,6 +96,21 @@ export default {
               ]
             },
             {
+              name: '视频',
+              child: [
+                {
+                  id: '2-9',
+                  path: '/picvideos/create',
+                  name: '新建视频'
+                },
+                {
+                  id: '2-10',
+                  path: '/picvideos/list',
+                  name: '视频列表'
+                }
+              ]
+            },
+            {
               name: '图文',
               child: [
                 {
@@ -130,6 +132,21 @@ export default {
           name: '运营管理',
           icon: 'fa fa-calendar-plus-o',
           subname: [
+            {
+              name: '物品',
+              child: [
+                {
+                  id: '2-1',
+                  path: '/goods/create',
+                  name: '新建物品'
+                },
+                {
+                  id: '2-2',
+                  path: '/goods/list',
+                  name: '物品列表'
+                }
+              ]
+            },
             {
               name: '广告',
               child: [
@@ -180,25 +197,30 @@ export default {
             }
           ]
         },
-        {
-          id: '5',
-          name: '项目情况',
-          icon: 'fa fa-cog',
-          subname: [
-            {
-              name: '分类详情',
-              child: [
-                {
-                  path: '/statistics/list',
-                  name: '分类统计'
-                }
-              ]
-            },
-          ]
-        }
+        // {
+        //   id: '5',
+        //   name: '项目情况',
+        //   icon: 'fa fa-cog',
+        //   subname: [
+        //     {
+        //       name: '分类详情',
+        //       child: [
+        //         {
+        //           path: '/statistics/list',
+        //           name: '分类统计'
+        //         }
+        //       ]
+        //     },
+        //   ]
+        // }
       ]
     }
-  }
+  },
+  computed: {
+    ...mapGetters([
+      'collapse'
+    ])
+  },
 }
 </script>
 
@@ -226,7 +248,7 @@ export default {
 }
 
 .el-menu-vertical-demo {
-  width: 35px;
+  width: 40px;
 }
 
 .el-submenu .el-menu-item {

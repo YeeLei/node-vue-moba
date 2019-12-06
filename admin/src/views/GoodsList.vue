@@ -15,14 +15,14 @@
           <el-form-item>
             <el-button type="primary"
                        size="mini"
-                       icon="search"
+                       icon="el-icon-search"
                        @click='onScreeoutMoney()'>筛选</el-button>
           </el-form-item>
 
           <el-form-item class="btnRight">
             <el-button type="primary"
                        size="mini"
-                       icon="view"
+                       icon="el-icon-circle-plus-outline"
                        @click="$router.push(`/goods/create`)">添加</el-button>
           </el-form-item>
         </el-form>
@@ -55,9 +55,11 @@
             <template slot-scope="scope">
               <el-button type="warning"
                          size="small"
+                         icon="el-icon-edit"
                          @click="$router.push(`/goods/edit/${scope.row._id}`)">编辑</el-button>
               <el-button type="danger"
                          size="small"
+                         icon="el-icon-delete"
                          @click="remove(scope.row)">删除</el-button>
             </template>
           </el-table-column>

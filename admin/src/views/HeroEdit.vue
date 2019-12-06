@@ -263,7 +263,9 @@
           </el-tabs>
           <el-form-item style="margin-top: 1rem;">
             <el-button type="primary"
-                       native-type="submit">保存</el-button>
+                       round
+                       native-type="submit"
+                       style="float:right;width:100px;">保存</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -383,6 +385,7 @@ export default {
       } else {
         res = await this.$http.post('rest/heroes', this.model)
       }
+      this.$router.push('/heroes/list')
       this.$message({
         type: 'success',
         message: '保存成功!'
