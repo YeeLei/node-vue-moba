@@ -12,7 +12,7 @@
     "core-js": "^3.3.2",
     "dayjs": "^1.8.17",
     "echarts": "^4.4.0",
-    "element-ui": "^2.4.5",
+    "element-ui": "^2.9.2",
     "jwt-decode": "^2.2.0",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
