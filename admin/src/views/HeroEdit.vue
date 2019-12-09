@@ -4,18 +4,24 @@
     <div class="fillcontain">
       <div class="info_container">
         <el-form label-width="120px"
-                 @submit.native.prevent="save">
+                 status-icon
+                 :rules="rules"
+                 :model="model"
+                 ref="heroForm">
           <el-tabs type="border-card"
                    value="basic">
             <el-tab-pane label="基础信息"
                          name="basic">
-              <el-form-item label="英雄名称">
+              <el-form-item label="英雄名称"
+                            prop="name">
                 <el-input v-model="model.name"></el-input>
               </el-form-item>
-              <el-form-item label="英雄称号">
+              <el-form-item label="英雄称号"
+                            prop="title">
                 <el-input v-model="model.title"></el-input>
               </el-form-item>
-              <el-form-item label="英雄头像">
+              <el-form-item label="英雄头像"
+                            prop="avatar">
                 <el-upload class="avatar-uploader"
                            :action="uploadUrl"
                            :show-file-list="false"
@@ -41,7 +47,8 @@
                      class="el-icon-plus banner-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="英雄类型">
+              <el-form-item label="英雄类型"
+                            prop="categories">
                 <el-select v-model="model.categories"
                            multiple>
                   <el-option v-for="item of categories"
@@ -264,7 +271,7 @@
           <el-form-item style="margin-top: 1rem;">
             <el-button type="primary"
                        round
-                       native-type="submit"
+                       @click="submitForm('heroForm')"
                        style="float:right;width:100px;">保存</el-button>
           </el-form-item>
         </el-form>
@@ -287,7 +294,9 @@ export default {
       partners: [],
       model: {
         name: '',
+        title: '',
         avatar: '',
+        categories: [],
         scores: {
           difficult: 0
         },
@@ -295,6 +304,36 @@ export default {
         partners: [],
         badPartners: [],
         restrains: []
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '英雄名字不能为空',
+            trigger: 'blur'
+          }
+        ],
+        title: [
+          {
+            required: true,
+            message: '英雄称号不能为空',
+            trigger: 'blur'
+          }
+        ],
+        avatar: [
+          {
+            required: true,
+            message: '请上传头像',
+            trigger: 'blur'
+          }
+        ],
+        categories: [
+          {
+            required: true,
+            message: '请选择英雄分类',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -376,19 +415,25 @@ export default {
         });
       });
     },
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id
-        res = await this.$http.put(`rest/heroes/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/heroes', this.model)
-      }
-      this.$router.push('/heroes/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+    submitForm (heroForm) {
+      this.$refs[heroForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-console
+          console.log(valid);
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id
+            res = this.$http.put(`rest/heroes/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/heroes', this.model)
+          }
+          this.$router.push('/heroes/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {

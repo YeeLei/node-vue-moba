@@ -1,43 +1,42 @@
 <template>
   <el-row class="menu_page">
     <el-col>
-      <el-menu
-        router
-        :unique-opened="true"
-        :default-active="$route.path"
-        :collapse="collapse"
-        mode="vertical"
-        background-color="#324057"
-        text-color="#fff"
-        active-text-color="#409eff"
-        class="el-menu-vertical-demo"
-      >
-        <div class="user-menu-box" v-for="menu in menus" :key="menu.id">
-          <el-menu-item v-if="!menu.subname" :index="menu.path">
-            <i :class="menu.icon" style="padding-right:10px"></i>
-            <span slot="title" v-text="menu.name"></span>
+      <el-menu router
+               :unique-opened="true"
+               :default-active="$route.path"
+               :collapse="collapse"
+               mode="vertical"
+               background-color="#324057"
+               text-color="#fff"
+               active-text-color="#409eff"
+               class="el-menu-vertical-demo">
+        <div class="user-menu-box"
+             v-for="menu in menus"
+             :key="menu.id">
+          <el-menu-item v-if="!menu.subname"
+                        :index="menu.path">
+            <i :class="menu.icon"
+               style="padding-right:10px"></i>
+            <span slot="title"
+                  v-text="menu.name"></span>
           </el-menu-item>
-          <el-submenu v-if="menu.subname" :index="menu.id">
+          <el-submenu v-if="menu.subname"
+                      :index="menu.id">
             <template slot="title">
-              <i
-                :class="menu.icon"
-                :w="20"
-                :h="20"
-                style="padding-right:10px"
-              ></i>
-              <span slot="title" v-text="menu.name"></span>
+              <i :class="menu.icon"
+                 :w="20"
+                 :h="20"
+                 style="padding-right:10px"></i>
+              <span slot="title"
+                    v-text="menu.name"></span>
             </template>
-            <el-menu-item-group
-              v-for="(subname, index) in menu.subname"
-              :key="index"
-            >
+            <el-menu-item-group v-for="(subname, index) in menu.subname"
+                                :key="index">
               <template slot="title">{{ subname.name }}</template>
-              <el-menu-item
-                v-for="(subMenu, index) in subname.child"
-                :key="index"
-                v-text="subMenu.name"
-                :index="subMenu.path"
-              >
+              <el-menu-item v-for="(subMenu, index) in subname.child"
+                            :key="index"
+                            v-text="subMenu.name"
+                            :index="subMenu.path">
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -51,7 +50,7 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'left-menu',
-  data() {
+  data () {
     return {
       activeMenu: '',
       menus: [
@@ -231,8 +230,6 @@ export default {
   min-height: 100%;
   background-color: #324057;
   z-index: 99;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .el-menu {

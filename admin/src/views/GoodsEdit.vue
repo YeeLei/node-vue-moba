@@ -8,12 +8,17 @@
                   :offset="8">
             <div class="area">
               <p class="title">{{id ? '编辑': '新建'}}物品</p>
-              <el-form label-width="50px"
-                       @submit.native.prevent="save">
-                <el-form-item label="名称">
+              <el-form label-width="80px"
+                       :model="model"
+                       :rules="rules"
+                       ref="GoodsForm"
+                       status-icon>
+                <el-form-item label="名称"
+                              prop="name">
                   <el-input v-model="model.name"></el-input>
                 </el-form-item>
-                <el-form-item label="图标">
+                <el-form-item label="图标"
+                              prop="icon">
                   <el-upload class="avatar-uploader"
                              :action="uploadUrl"
                              :show-file-list="false"
@@ -29,7 +34,7 @@
                 <el-form-item class="btn">
                   <el-button type="primary"
                              round
-                             native-type="submit"
+                             @click="submitForm('GoodsForm')"
                              style="float:right;width:100px;">保存</el-button>
                 </el-form-item>
               </el-form>
@@ -51,7 +56,24 @@ export default {
   data () {
     return {
       model: {
-        icon: ''
+        icon: '',
+        name: ''
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '物品名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        icon: [
+          {
+            required: true,
+            message: '请上传物品图片',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -63,20 +85,24 @@ export default {
       // console.log(res)
       this.model.icon = res.url
     },
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id
-        res = await this.$http.put(`rest/goods/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/goods', this.model)
-      }
+    submitForm (GoodsForm) {
+      this.$refs[GoodsForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id
+            res = this.$http.put(`rest/goods/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/goods', this.model)
+          }
 
-      this.$router.push('/goods/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+          this.$router.push('/goods/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {

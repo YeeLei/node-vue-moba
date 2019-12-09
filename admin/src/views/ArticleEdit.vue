@@ -4,8 +4,12 @@
     <div class="fillcontain">
       <div class="info_container">
         <el-form label-width="120px"
-                 @submit.native.prevent="save">
-          <el-form-item label="所属分类">
+                 :model="model"
+                 :rules="rules"
+                 ref="ArticleForm"
+                 status-icon>
+          <el-form-item label="所属分类"
+                        prop="categories">
             <el-select v-model="model.categories"
                        filterable
                        multiple>
@@ -16,7 +20,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="标题">
+          <el-form-item label="标题"
+                        prop="title">
             <el-input v-model="model.title"></el-input>
           </el-form-item>
           <el-form-item label="详情">
@@ -28,7 +33,7 @@
           <el-form-item>
             <el-button type="primary"
                        round
-                       native-type="submit"
+                       @click="submitForm('ArticleForm')"
                        style="float:right;width:100px;">保存</el-button>
           </el-form-item>
         </el-form>
@@ -47,8 +52,27 @@ export default {
   },
   data () {
     return {
-      model: {},
-      categories: []
+      model: {
+        categories: [],
+        title: ''
+      },
+      categories: [],
+      rules: {
+        title: [
+          {
+            required: true,
+            message: '文章标题不能为空',
+            trigger: 'blur'
+          }
+        ],
+        categories: [
+          {
+            required: true,
+            message: '请选择文章分类',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -59,20 +83,24 @@ export default {
       Editor.insertEmbed(cursorLocation, "image", res.data.url);
       resetUploader();
     },
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id,则编辑
-        res = await this.$http.put(`rest/articles/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/articles', this.model)
-      }
+    submitForm (ArticleForm) {
+      this.$refs[ArticleForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id,则编辑
+            res = this.$http.put(`rest/articles/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/articles', this.model)
+          }
 
-      this.$router.push('/articles/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+          this.$router.push('/articles/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {

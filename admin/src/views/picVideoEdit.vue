@@ -4,8 +4,12 @@
     <div class="fillcontain">
       <div class="info_container">
         <el-form label-width="120px"
-                 @submit.native.prevent="save">
-          <el-form-item label="所属分类">
+                 :model="model"
+                 :rules="rules"
+                 ref="VideoArticleForm"
+                 status-icon>
+          <el-form-item label="所属分类"
+                        prop="categories">
             <el-select v-model="model.categories"
                        filterable
                        multiple>
@@ -16,10 +20,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="视频标题">
+          <el-form-item label="视频标题"
+                        prop="title">
             <el-input v-model="model.title"></el-input>
           </el-form-item>
-          <el-form-item label="视频图片">
+          <el-form-item label="视频图片"
+                        prop="pic">
             <el-upload class="pic-uploader"
                        :action="uploadUrl"
                        :show-file-list="false"
@@ -41,7 +47,7 @@
           <el-form-item>
             <el-button type="primary"
                        round
-                       native-type="submit"
+                       @click="submitForm('VideoArticleForm')"
                        style="float:right;width:100px;">保存</el-button>
           </el-form-item>
         </el-form>
@@ -61,9 +67,34 @@ export default {
   data () {
     return {
       model: {
-        pic: ''
+        pic: '',
+        title: '',
+        categories: []
       },
-      categories: []
+      categories: [],
+      rules: {
+        title: [
+          {
+            required: true,
+            message: '视频标题不能为空',
+            trigger: 'blur'
+          }
+        ],
+        pic: [
+          {
+            required: true,
+            message: '请上传视频图片',
+            trigger: 'blur'
+          }
+        ],
+        categories: [
+          {
+            required: true,
+            message: '请选择视频分类',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -74,20 +105,24 @@ export default {
       Editor.insertEmbed(cursorLocation, "image", res.data.url);
       resetUploader();
     },
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id,则编辑
-        res = await this.$http.put(`rest/picvideos/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/picvideos', this.model)
-      }
+    submitForm (VideoArticleForm) {
+      this.$refs[VideoArticleForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id,则编辑
+            res = this.$http.put(`rest/picvideos/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/picvideos', this.model)
+          }
 
-      this.$router.push('/picvideos/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+          this.$router.push('/picvideos/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {

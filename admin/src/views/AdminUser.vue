@@ -8,20 +8,27 @@
                   :offset="8">
             <div class="area">
               <p class="title">{{id ? '编辑': '新建'}}管理员</p>
-              <el-form label-width="50px"
-                       @submit.native.prevent="save">
-                <el-form-item label="邮箱">
+              <el-form label-width="80px"
+                       :model="model"
+                       :rules="rules"
+                       ref="AdminForm"
+                       status-icon>
+                <el-form-item label="邮箱"
+                              prop="email">
                   <el-input v-model="model.email"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
+                <el-form-item label="密码"
+                              prop="password">
                   <el-input type="text"
                             v-model="model.password"></el-input>
                 </el-form-item>
-                <el-form-item label="名字">
+                <el-form-item label="名字"
+                              prop="name">
                   <el-input type="text"
                             v-model="model.name"></el-input>
                 </el-form-item>
                 <el-form-item label="头像"
+                              prop="avatar"
                               style="margin-top:0.5rem;">
                   <el-upload class="avatar-uploader"
                              :action="uploadUrl"
@@ -38,7 +45,7 @@
                 <el-form-item>
                   <el-button type="primary"
                              round
-                             native-type="submit"
+                             @click="submitForm('AdminForm')"
                              style="float:right;width:100px;">保存</el-button>
                 </el-form-item>
               </el-form>
@@ -59,24 +66,63 @@ export default {
   },
   data () {
     return {
-      model: {}
+      model: {
+        email: '',
+        password: '',
+        name: '',
+        avatar: ''
+      },
+      rules: {
+        email: [
+          {
+            type: 'email',
+            required: true,
+            message: '邮箱格式不正确',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: 'blur'
+          },
+        ],
+        name: [
+          {
+            required: true,
+            message: '请输入管理员名字',
+            trigger: 'blur'
+          }
+        ],
+        avatar: [
+          {
+            required: true,
+            message: '请上传管理员头像',
+            trigger: 'blur'
+          }
+        ],
+      }
     }
   },
   methods: {
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id
-        res = await this.$http.put(`rest/admin_users/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/admin_users', this.model)
-      }
-
-      this.$router.push('/admin_users/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+    submitForm (AdminForm) {
+      this.$refs[AdminForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id
+            res = this.$http.put(`rest/admin_users/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/admin_users', this.model)
+          }
+          this.$router.push('/admin_users/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {
@@ -90,7 +136,7 @@ export default {
   },
   created () {
     this.id && this.fetch()
-  },
+  }
 }
 </script>
 

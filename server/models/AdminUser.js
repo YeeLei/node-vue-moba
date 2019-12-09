@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const dayjs = require('dayjs')
 const schema = new mongoose.Schema(
   {
     email: {
@@ -8,7 +7,7 @@ const schema = new mongoose.Schema(
     },
     password: {
       type: String,
-      select: false,
+      select: false, // 不显示密码
       set: val => {
         return require('bcryptjs').hashSync(val, 10)
       }

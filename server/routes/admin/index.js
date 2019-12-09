@@ -73,6 +73,8 @@ module.exports = app => {
   // 登录
   app.post('/admin/api/login', async (req, res) => {
     const { email, password } = req.body
+    console.log(req.body)
+
     // 1. 根据邮箱查找用户
     const User = await AdminUser.findOne({ email }).select('+password')
     assert(User, 422, '邮箱或密码错误！')

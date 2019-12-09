@@ -54,9 +54,10 @@
                  title="英雄列表"
                  :categories="heroCats"
                  :newHeroBanner="newHeroBanner[0]">
-      <template #items="{category}">
+      <template #items="{category}"
+                v-if="heroCats">
         <div class="d-flex flex-wrap"
-             style="margin: 0 -0.5rem;flex-wrap: wrap;">
+             style="margin: 0 -0.5rem;">
           <router-link tag="div"
                        :to="`/heroes/${hero._id}`"
                        class="p-2 text-center"
@@ -210,7 +211,7 @@ export default {
         loop: true
       },
       banners: [],
-      newHeroBanner: {},
+      newHeroBanner: [],
       newsCats: [],
       heroCats: [],
       picNewsCats: [],

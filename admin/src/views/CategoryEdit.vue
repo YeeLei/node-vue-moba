@@ -9,7 +9,10 @@
             <div class="area">
               <p class="title">{{id ? '编辑': '新建'}}分类</p>
               <el-form label-width="100px"
-                       @submit.native.prevent="save">
+                       :model="model"
+                       :rules="rules"
+                       ref="CategoryForm"
+                       status-icon>
                 <el-form-item label="上级分类">
                   <el-select v-model="model.parent"
                              class="select">
@@ -20,13 +23,14 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="名称">
+                <el-form-item label="名称"
+                              prop="name">
                   <el-input v-model="model.name"></el-input>
                 </el-form-item>
                 <el-form-item class="btn">
                   <el-button type="primary"
                              round
-                             native-type="submit"
+                             @click="submitForm('CategoryForm')"
                              style="float:right;width:100px;">保存</el-button>
                 </el-form-item>
               </el-form>
@@ -46,25 +50,40 @@ export default {
   },
   data () {
     return {
-      model: {},
-      parents: []
+      model: {
+        name: ''
+      },
+      parents: [],
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '分类名称不能为空',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   methods: {
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id
-        res = await this.$http.put(`rest/categories/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/categories', this.model)
-      }
+    submitForm (CategoryForm) {
+      this.$refs[CategoryForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id
+            res = this.$http.put(`rest/categories/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/categories', this.model)
+          }
 
-      this.$router.push('/categories/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+          this.$router.push('/categories/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {

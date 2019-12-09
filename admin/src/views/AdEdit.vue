@@ -5,8 +5,12 @@
       <div class="info_container">
         <div class="area">
           <el-form label-width="120px"
-                   @submit.native.prevent="save">
-            <el-form-item label="名称">
+                   :model="model"
+                   :rules="rules"
+                   ref="AdsForm"
+                   status-icon>
+            <el-form-item label="名称"
+                          prop="name">
               <el-input v-model="model.name"></el-input>
             </el-form-item>
             <el-form-item label="广告">
@@ -55,7 +59,7 @@
             <el-form-item>
               <el-button type="primary"
                          round
-                         native-type="submit"
+                         @click="submitForm('AdsForm')"
                          style="float:right;width:100px;">保存</el-button>
             </el-form-item>
           </el-form>
@@ -75,7 +79,20 @@ export default {
   data () {
     return {
       model: {
-        items: []
+        name: '',
+        items: [{
+          url: '',
+          image: ''
+        }]
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '广告名称不能为空',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -98,20 +115,24 @@ export default {
         });
       });
     },
-    async save () {
-      // eslint-disable-next-line no-unused-vars
-      let res
-      if (this.id) {
-        // 如果有id
-        res = await this.$http.put(`rest/ads/${this.id}`, this.model)
-      } else {
-        res = await this.$http.post('rest/ads', this.model)
-      }
+    submitForm (AdsForm) {
+      this.$refs[AdsForm].validate(valid => {
+        if (valid) {
+          // eslint-disable-next-line no-unused-vars
+          let res
+          if (this.id) {
+            // 如果有id
+            res = this.$http.put(`rest/ads/${this.id}`, this.model)
+          } else {
+            res = this.$http.post('rest/ads', this.model)
+          }
 
-      this.$router.push('/ads/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功!'
+          this.$router.push('/ads/list')
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+        }
       })
     },
     async fetch () {
