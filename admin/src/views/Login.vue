@@ -4,31 +4,33 @@
       <div class="form_container">
         <div class="manage_tip">
           <div class="title">
-            <img src="../assets/logo1.png"
-                 class="img" />
+            <img src="../assets/logo1.png" class="img" />
           </div>
-          <el-form :model="loginUser"
-                   :rules="rules"
-                   ref="loginForm"
-                   label-width="80px"
-                   status-icon
-                   class="loginForm">
-            <el-form-item label="邮箱"
-                          prop="email">
-              <el-input v-model="loginUser.email"
-                        placeholder="请输入邮箱">
+          <el-form
+            :model="loginUser"
+            :rules="rules"
+            ref="loginForm"
+            label-width="80px"
+            status-icon
+            class="loginForm"
+          >
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="loginUser.email" placeholder="请输入邮箱">
               </el-input>
             </el-form-item>
-            <el-form-item label="密码"
-                          prop="password">
-              <el-input type="password"
-                        v-model="loginUser.password"
-                        placeholder="请输入密码"></el-input>
+            <el-form-item label="密码" prop="password">
+              <el-input
+                type="password"
+                v-model="loginUser.password"
+                placeholder="请输入密码"
+              ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary"
-                         class="submit_btn"
-                         @click="submitForm('loginForm')">SING IN
+              <el-button
+                type="primary"
+                class="submit_btn"
+                @click="submitForm('loginForm')"
+                >SING IN
               </el-button>
             </el-form-item>
           </el-form>
@@ -40,7 +42,7 @@
 <script>
 import jwt_decode from 'jwt-decode'
 export default {
-  data () {
+  data() {
     return {
       loginUser: {
         email: '',
@@ -60,7 +62,7 @@ export default {
     }
   },
   methods: {
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$http.post('login', this.loginUser).then(res => {
@@ -82,7 +84,7 @@ export default {
         }
       })
     },
-    isEmpty (value) {
+    isEmpty(value) {
       return (
         value === undefined ||
         value === null ||

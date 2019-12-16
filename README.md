@@ -1,7 +1,6 @@
-# Node.js + Vue.js 全栈开发王者荣耀手机端官网和管理后台
+# Node.js + Vue.js 王者荣耀手机端官网和管理后台
 
 > https://github.com/YeeLei/node-vue-moba
-
 
 ## 一、 管理后台
 

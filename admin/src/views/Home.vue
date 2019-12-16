@@ -2,7 +2,7 @@
   <div class="home">
     <div class="container">
       <h1 class="title">王者在线</h1>
-      <p class="lead"> 小乔要努力变强哟! </p>
+      <p class="lead"> 欢迎来到王者荣耀后台管理系统！ </p>
     </div>
   </div>
 </template>

@@ -1,20 +1,26 @@
 <template>
   <header class="head-nav">
     <el-row>
-      <el-col :span="6" class="logo-container">
-        <img src="../assets/logo.png" class="logo" alt="" />
+      <el-col :span="6"
+              class="logo-container">
+        <img src="../assets/logo.png"
+             class="logo"
+             alt="" />
         <span class="title">在线后台管理系统</span>
       </el-col>
       <div class="user">
         <div class="userinfo">
-          <img :src="user.avatar" class="avatar" alt="" />
+          <img :src="user.avatar"
+               class="avatar"
+               alt="" />
           <div class="welcome">
             <span class="name comename">Hi,</span>
             <span class="name avatarname">{{ user.name }}</span>
           </div>
           <span class="username">
             <!-- 下拉箭头 -->
-            <el-dropdown trigger="click" @command="setDialogInfo">
+            <el-dropdown trigger="click"
+                         @command="setDialogInfo">
               <span class="el-dropdown-link">
                 <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
@@ -31,15 +37,16 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'head-nav',
   computed: {
-    user() {
+    user () {
       return this.$store.getters.user
     }
   },
   methods: {
-    setDialogInfo(cmdItem) {
+    setDialogInfo (cmdItem) {
       // console.log(cmdItem)
       switch (cmdItem) {
         case 'info':
@@ -50,19 +57,24 @@ export default {
           break
       }
     },
-    showInfoList() {
+    showInfoList () {
       // console.log('个人信息')
       this.$router.push('/infoshow')
     },
-    logout() {
+    logout () {
       // console.log('退出');
       //清除token
       localStorage.removeItem('token')
       //设置vuex.store
       this.$store.dispatch('clearCurrentState')
+      // 清除breadcrumbs导航菜单折叠
+      this.setCollapse(false)
       //跳转
       this.$router.push('/login')
-    }
+    },
+    ...mapMutations({
+      setCollapse: 'SET_COLLAPSE'
+    })
   }
 }
 </script>
